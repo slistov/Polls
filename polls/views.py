@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.template import loader
 from django.shortcuts import get_object_or_404, render
 
-from .models import Poll, Question, Answer
+from .models import Poll, Question, Answer, Choice
 
 
 def index(request):
@@ -28,6 +28,11 @@ def results(request, poll_id, question_id):
     return HttpResponse(response % question_id)
 
 def vote(request, poll_id, question_id):
+    SESSION = {
+        'GUID': '1A1A',
+        'user_id': 1
+    }
+
     question = get_object_or_404(Question, pk=question_id)
     try:
         selected_choice = question.answer_set.get(pk=request.POST['answer'])
@@ -39,7 +44,10 @@ def vote(request, poll_id, question_id):
         })
     else:
         # selected_choice.votes += 1
-        selected_choice.save()
+        # selected_choice.save()
+        choice = Choice(answer=selected_choice, user_id=SESSION['user_id'])
+        choice.save()
+
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
