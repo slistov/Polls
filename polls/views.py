@@ -3,8 +3,34 @@ from django.urls import reverse
 
 from django.template import loader
 from django.shortcuts import get_object_or_404, render
+from django.views import generic
 
 from .models import Poll, Question, Answer, Choice
+
+
+class IndexView(generic.ListView):
+    template_name = 'polls/index.html'
+    context_object_name = 'latest_poll_list'
+
+    def get_queryset(self):
+        """Return the last five published questions."""
+        return Poll.objects.order_by('-start_date')[:5]
+
+
+class PollView(generic.DetailView):
+    model = Poll
+    template_name = 'polls/poll.html'
+
+
+class QuestionView(generic.DetailView):
+    model = Question
+    template_name = 'polls/question.html'
+
+
+
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = 'polls/results.html'
 
 
 def index(request):
