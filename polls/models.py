@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.db.models.fields.related import ForeignKey
 
 class Poll(models.Model):
     title = models.CharField('Название', max_length=200)
@@ -44,6 +44,16 @@ class Answer(models.Model):
         return self.answer_text
 
 
+class User(models.Model):
+    email = models.CharField(max_length=20)
+    
+    # ;-)
+    password = models.CharField(max_length=20)
+    def __str__(self) -> str:
+        return self.email
+
+
+
 class Choice(models.Model):
+    user_id = models.IntegerField(default=0)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
